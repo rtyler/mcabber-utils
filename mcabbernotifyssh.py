@@ -8,21 +8,17 @@ LOW = -1
 NORMAL = -2
 CRITICAL = -3
 
-def runssh():
-	print '==> Logging in'
-	os.system('ssh pineapple -C "tail -f ~/.mcabber/last_event" > /tmp/mcabber 2>&1 &')
-
 def notifier_init():
-	if sys.platform == 'linux':
+	if sys.platform == 'linux2':
 		import pynotify
 		pynotify.init('mcabber')
 def notifier_close():
-	if sys.platform == 'linux':
+	if sys.platform == 'linux2':
 		import pynotify
 		pynotify.uninit()
 
 def generateNotification(title, body, urgency=LOW):
-	if sys.platform == 'linux':
+	if sys.platform == 'linux2':
 		import pynotify
 		urg = {LOW : pynotify.URGENCY_LOW, NORMAL : pynotify.URGENCY_NORMAL, CRITICAL : pynotify.URGENCY_CRITICAL}
 		n = pynotify.Notification(title, body)
@@ -60,12 +56,10 @@ class Handlers(object):
 		
 
 def main():
-	runssh()
-	f = open('/tmp/mcabber', 'r')
 	h = Handlers()
 	notifier_init()
 	while True:
-		line = f.readline()
+		line = sys.stdin.readline()
 		if line:
 			cmd = line.split(' ')[0]
 			if hasattr(h, cmd):
@@ -73,8 +67,8 @@ def main():
 			else:
 				print line
 		time.sleep(1)
-	f.close()
 	notifier_close()
 
 if __name__ == '__main__':
 	main()
+
