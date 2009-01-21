@@ -36,13 +36,13 @@ class Handlers(object):
 		status = parts[1]
 		who = ' '.join(parts[2:])
 		status = status_map.get(status, status)
-		generateNotification('Status Change', '%s is now %s' % (who, status))
+		generateNotification('%s is now %s' % (who, status))
 
 	def UNREAD(self, line):
 		parts = line.split(' ')
 		unread = int(parts[1])
 		if unread > 1:
-			generateNotification('You have unread Jabber messages', '%s total unread messages' % unread)
+			generateNotification('%s unread messages' % unread)
 
 	def MSG(self, line):
 		parts = line.split(' ')
@@ -50,9 +50,9 @@ class Handlers(object):
 		kind = parts[1]
 		who = ' '.join(parts[2:])
 		if kind == 'IN':
-			generateNotification('Private message:', '%s sent you a message' % who, CRITICAL)
+			generateNotification('Private message', '%s sent you a message' % who, CRITICAL)
 		if kind == 'MUC':
-			generateNotification('Conference activity in:', who, NORMAL)
+			generateNotification('Conference activity in', who, NORMAL)
 		
 
 def main():
