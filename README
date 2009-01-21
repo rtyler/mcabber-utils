@@ -20,6 +20,13 @@ options in your mcabberrc file that you use:
 Then you'll want to move the "eventcmd" in this directory into ~/.mcabber and make sure it is executable
 
 
+SPECIAL NOTES FOR MAC USERS
+==============================
+To use mcabbernotify on Mac OS X, you should install the "growlnotify" extra (it's a command-line
+interface to Growl). You can install this by running "install.sh" in the Extras/growlnotify/ 
+directory in the download. 
+
+
 USING IT LOCALLY
 ===================
 If you use mcabber on your local machine, you will simply need to run:
