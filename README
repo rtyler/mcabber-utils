@@ -30,13 +30,13 @@ directory in the download.
 USING IT LOCALLY
 ===================
 If you use mcabber on your local machine, you will simply need to run:
-	tail -f ~/.mcabber/last_event | path/to/mcabbernotify.py
+	tail --follow ~/.mcabber/last_event | path/to/mcabbernotify.py
 
 
 USING IT REMOTELY
 ===================
 In the situation where you run mcabber remotely, and want notifications locally, you can use the following command:
-	ssh hostname -C "tail -f ~/.mcabber/last_event" | path/to/mcabbernotify.py
+	ssh hostname -C "tail --follow ~/.mcabber/last_event" | path/to/mcabbernotify.py
 
 
 
