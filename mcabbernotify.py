@@ -35,20 +35,22 @@ class Handlers(object):
 		cmd = parts[0]
 		status = parts[1]
 		who = ' '.join(parts[2:])
+		who = ''.join([f for f in who if f != '\n'])
 		status = status_map.get(status, status)
-		generateNotification('%s is now %s' % (who, status))
+		generateNotification('%s is now %s' % (who, status), '')
 
 	def UNREAD(self, line):
 		parts = line.split(' ')
 		unread = int(parts[1])
 		if unread > 1:
-			generateNotification('%s unread messages' % unread)
+			generateNotification('%s unread messages' % unread, '')
 
 	def MSG(self, line):
 		parts = line.split(' ')
 		cmd = parts[0]
 		kind = parts[1]
 		who = ' '.join(parts[2:])
+		who = ''.join([f for f in who if f != '\n'])
 		if kind == 'IN':
 			generateNotification('Private message', '%s sent you a message' % who, CRITICAL)
 		if kind == 'MUC':
