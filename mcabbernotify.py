@@ -26,7 +26,7 @@ def generateNotification(title, body, urgency=LOW):
 		n.set_urgency(urg[urgency])
 		n.show()
 	if sys.platform == 'darwin':
-		pass # import GrowlNotify?
+		os.system('growlnotify --name="mcabber" %s' % ('%s\n%s' % (title, body)))
 
 class Handlers(object):
 	def STATUS(self, line):
