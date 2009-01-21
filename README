@@ -1,0 +1,34 @@
+  _ __ ___     ___    __ _  | |__   | |__     ___   _ __           _   _  | |_  (_) | |  ___ 
+ | '_ ` _ \   / __|  / _` | | '_ \  | '_ \   / _ \ | '__|  _____  | | | | | __| | | | | / __|
+ | | | | | | | (__  | (_| | | |_) | | |_) | |  __/ | |    |_____| | |_| | | |_  | | | | \__ \
+ |_| |_| |_|  \___|  \__,_| |_.__/  |_.__/   \___| |_|             \__,_|  \__| |_| |_| |___/
+----------------------------------------------------------------------------------------------
+
+
+mcabbernotify.py
+******************
+******************
+
+SETTING UP EVENTS COMMAND
+=============================
+In order for mcabbernotify.py to read anything, you will need to set the following
+options in your mcabberrc file that you use:
+	set events_command = ~/.mcabber/eventcmd
+	set events_ignore_active_window = 1
+
+Then you'll want to move the "eventscmd" in this directory into ~/.mcabber and make sure it is executable
+
+
+USING IT LOCALLY
+===================
+If you use mcabber on your local machine, you will simply need to run:
+	tail -f ~/.mcabber/last_event | path/to/mcabbernotify.py
+
+
+USING IT REMOTELY
+===================
+In the situation where you run mcabber remotely, and want notifications locally, you can use the following command:
+	ssh hostname -C "tail -f ~/.mcabber/last_event" | path/to/mcabbernotify.py
+
+
+
