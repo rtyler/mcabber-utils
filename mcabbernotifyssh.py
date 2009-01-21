@@ -3,17 +3,34 @@
 import os
 import sys
 import time
-import pynotify
+
+LOW = -1
+NORMAL = -2
+CRITICAL = -3
 
 def runssh():
 	print '==> Logging in'
 	os.system('ssh pineapple -C "tail -f ~/.mcabber/last_event" > /tmp/mcabber 2>&1 &')
 
-def generateNotification(title, body, urgency = pynotify.URGENCY_LOW):
-	n = pynotify.Notification(title, body)
-	n.set_timeout(4500)
-	n.set_urgency(urgency)
-	n.show()
+def notifier_init():
+	if sys.platform == 'linux':
+		import pynotify
+		pynotify.init('mcabber')
+def notifier_close():
+	if sys.platform == 'linux':
+		import pynotify
+		pynotify.uninit()
+
+def generateNotification(title, body, urgency=LOW):
+	if sys.platform == 'linux':
+		import pynotify
+		urg = {LOW : pynotify.URGENCY_LOW, NORMAL : pynotify.URGENCY_NORMAL, CRITICAL : pynotify.URGENCY_CRITICAL}
+		n = pynotify.Notification(title, body)
+		n.set_timeout(4500)
+		n.set_urgency(urg[urgency])
+		n.show()
+	if sys.platform == 'darwin':
+		pass # import GrowlNotify?
 
 class Handlers(object):
 	def STATUS(self, line):
@@ -37,16 +54,16 @@ class Handlers(object):
 		kind = parts[1]
 		who = ' '.join(parts[2:])
 		if kind == 'IN':
-			generateNotification('Private message:', '%s sent you a message' % who, pynotify.URGENCY_CRITICAL)
+			generateNotification('Private message:', '%s sent you a message' % who, CRITICAL)
 		if kind == 'MUC':
-			generateNotification('Conference activity in:', who, pynotify.URGENCY_NORMAL)
+			generateNotification('Conference activity in:', who, NORMAL)
 		
 
 def main():
 	runssh()
 	f = open('/tmp/mcabber', 'r')
-	pynotify.init('mcabber')
 	h = Handlers()
+	notifier_init()
 	while True:
 		line = f.readline()
 		if line:
@@ -57,7 +74,7 @@ def main():
 				print line
 		time.sleep(1)
 	f.close()
-	pynotify.uninit()
+	notifier_close()
 
 if __name__ == '__main__':
 	main()
