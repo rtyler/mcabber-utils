@@ -16,7 +16,7 @@ options in your mcabberrc file that you use:
 	set events_command = ~/.mcabber/eventcmd
 	set events_ignore_active_window = 1
 
-Then you'll want to move the "eventscmd" in this directory into ~/.mcabber and make sure it is executable
+Then you'll want to move the "eventcmd" in this directory into ~/.mcabber and make sure it is executable
 
 
 USING IT LOCALLY

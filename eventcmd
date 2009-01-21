@@ -1,0 +1,3 @@
+#!/bin/bash
+
+echo "$@" >> ~/.mcabber/last_event
