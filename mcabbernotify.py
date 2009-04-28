@@ -58,6 +58,7 @@ class Handlers(object):
 		
 
 def main():
+	print >> sys.stderr, "%d\n" % os.getpid()
 	h = Handlers()
 	notifier_init()
 	while True:
