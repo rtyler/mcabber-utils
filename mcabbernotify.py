@@ -1,5 +1,6 @@
 #!/usr/bin/env python
 
+import locale
 import os
 import sys
 import time
@@ -7,11 +8,14 @@ import time
 LOW = -1
 NORMAL = -2
 CRITICAL = -3
+MAX_MSG_LEN = 60
+encoding = locale.getdefaultlocale()[1]
 
 def notifier_init():
 	if sys.platform == 'linux2':
 		import pynotify
 		pynotify.init('mcabber')
+
 def notifier_close():
 	if sys.platform == 'linux2':
 		import pynotify
@@ -21,7 +25,7 @@ def generateNotification(title, body, urgency=LOW):
 	if sys.platform == 'linux2':
 		import pynotify
 		urg = {LOW : pynotify.URGENCY_LOW, NORMAL : pynotify.URGENCY_NORMAL, CRITICAL : pynotify.URGENCY_CRITICAL}
-		n = pynotify.Notification(title, body)
+		n = pynotify.Notification(unicode(title, encoding), unicode(body, encoding))
 		n.set_timeout(4500)
 		n.set_urgency(urg[urgency])
 		n.show()
@@ -49,10 +53,20 @@ class Handlers(object):
 		parts = line.split(' ')
 		cmd = parts[0]
 		kind = parts[1]
-		who = ' '.join(parts[2:])
-		who = ''.join([f for f in who if f != '\n'])
+		who = parts[2].replace('\n', '')
+		if len(parts) > 3:
+			fname = parts[3].rstrip()
+			fp = open(fname)
+			msg = fp.read().rstrip()
+			fp.close()
+			os.remove(fname)
+			if len(msg) > MAX_MSG_LEN:
+				msg = msg[:MAX_MSG_LEN] + '...'
+		else:
+			msg = ''
+
 		if kind == 'IN':
-			generateNotification('Private message', '%s sent you a message' % who, CRITICAL)
+			generateNotification('%s sent you a message' % who, msg, CRITICAL)
 		if kind == 'MUC':
 			generateNotification('Conference activity in', who, NORMAL)
 		
