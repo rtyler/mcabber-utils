@@ -88,7 +88,7 @@ def main():
 					getattr(h, cmd)(line)
 				else:
 					print line
-            time.sleep(PAUSE)
+			time.sleep(PAUSE)
 	finally:
 		notifier_close()
 
