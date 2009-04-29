@@ -76,7 +76,9 @@ class Handlers(object):
 
 
 def main():
-	print >> sys.stderr, "%d\n" % os.getpid()
+	fp = open(sys.argv[1], 'a')
+	fp.write("%d\n" % os.getpid())
+	fp.close()
 	h = Handlers()
 	notifier_init()
 	try:
