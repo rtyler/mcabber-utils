@@ -1,3 +1,3 @@
 #!/bin/bash
 
-echo "$@" >> ~/.mcabber/last_event
+echo "`echo -n "($1)"; echo -n "($2)"; [ "$3" ] && echo -n "($3)"; [ "$4" ] && echo -n "($4)"`" >> ~/.mcabber/last_event

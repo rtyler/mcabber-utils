@@ -2,6 +2,7 @@
 
 import locale
 import os
+import re
 import sys
 import time
 
@@ -33,27 +34,28 @@ def generateNotification(title, body, urgency=LOW):
 		os.system('growlnotify --name="mcabber" -m "%s"' % ('%s\n%s' % (title, body)))
 
 class Handlers(object):
-	def STATUS(self, line):
-		status_map = {'O' : 'online', '_' : 'offline', 'A' : 'away', 'I' : 'invisible', 'F' : 'free to chat', 'D' : 'do not disturb', 'N' : 'not available'}
-		parts = line.split(' ')
+	status_map = {'O' : 'online', '_' : 'offline', 'A' : 'away', 'I' : 'invisible', 'F' : 'free to chat', 'D' : 'do not disturb', 'N' : 'not available'}
+
+	arg_re = re.compile("\(.*?\)")
+	def parse(self, line):
+		parts = [x[1:-1] for x in self.arg_re.findall(line)]
 		cmd = parts[0]
-		status = parts[1]
-		who = ' '.join(parts[2:])
-		who = ''.join([f for f in who if f != '\n'])
-		status = status_map.get(status, status)
-		generateNotification('%s is now %s' % (who, status), '')
+		kind = parts[1]
+		who = len(parts) > 2 and parts[2] or None
+		return parts, cmd, kind, who
+
+	def STATUS(self, line):
+		parts, cmd, kind, who = self.parse(line)
+		generateNotification('%s is now %s' % (who, self.status_map.get(kind)), '')
 
 	def UNREAD(self, line):
-		parts = line.split(' ')
+		parts, cmd, kind, who = self.parse(line)
 		unread = int(parts[1])
 		if unread > 1:
 			generateNotification('%s unread messages' % unread, '')
 
 	def MSG(self, line):
-		parts = line.split(' ')
-		cmd = parts[0]
-		kind = parts[1]
-		who = parts[2].replace('\n', '')
+		parts, cmd, kind, who = self.parse(line)
 		if len(parts) > 3:
 			fname = parts[3].rstrip()
 			fp = open(fname)
@@ -78,7 +80,7 @@ def main():
 	while True:
 		line = sys.stdin.readline()
 		if line:
-			cmd = line.split(' ')[0]
+			cmd = Handlers.arg_re.findall(line)[0][1:-1]
 			if hasattr(h, cmd):
 				getattr(h, cmd)(line) 
 			else:
