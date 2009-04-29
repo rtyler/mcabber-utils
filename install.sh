@@ -9,4 +9,5 @@ cp $HERE/start.sh $THERE/start.sh
 cp $HERE/stop.sh $THERE/stop.sh
 cp $HERE/eventcmd $THERE/eventcmd
 cp $HERE/mcabbernotify.py $THERE/mcabbernotify.py
+cp $HERE/mcabber_wrapper $THERE/mcabber_wrapper
 touch $THERE/last_event
