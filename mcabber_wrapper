@@ -8,5 +8,5 @@ cleanup() {
 }
 
 ./start.sh
-mcabber # this blocks the shell
+mcabber # this blocks the shell until mcabber closes
 ./stop.sh

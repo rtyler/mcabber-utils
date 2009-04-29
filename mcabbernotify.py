@@ -10,6 +10,7 @@ LOW = -1
 NORMAL = -2
 CRITICAL = -3
 MAX_MSG_LEN = 60
+PAUSE = 0.2
 encoding = locale.getdefaultlocale()[1]
 
 def notifier_init():
@@ -22,15 +23,16 @@ def notifier_close():
 		import pynotify
 		pynotify.uninit()
 
-def generateNotification(title, body, urgency=LOW):
-	if sys.platform == 'linux2':
+if sys.platform == 'linux2':
+	def generateNotification(title, body, urgency=LOW):
 		import pynotify
 		urg = {LOW : pynotify.URGENCY_LOW, NORMAL : pynotify.URGENCY_NORMAL, CRITICAL : pynotify.URGENCY_CRITICAL}
 		n = pynotify.Notification(unicode(title, encoding), unicode(body, encoding))
 		n.set_timeout(4500)
 		n.set_urgency(urg[urgency])
 		n.show()
-	if sys.platform == 'darwin':
+elif sys.platform == 'darwin':
+	def generateNotification(title, body, urgency=LOW):
 		os.system('growlnotify --name="mcabber" -m "%s"' % ('%s\n%s' % (title, body)))
 
 class Handlers(object):
@@ -71,22 +73,24 @@ class Handlers(object):
 			generateNotification('%s sent you a message' % who, msg, CRITICAL)
 		if kind == 'MUC':
 			generateNotification('Conference activity in', who, NORMAL)
-		
+
 
 def main():
 	print >> sys.stderr, "%d\n" % os.getpid()
 	h = Handlers()
 	notifier_init()
-	while True:
-		line = sys.stdin.readline()
-		if line:
-			cmd = Handlers.arg_re.findall(line)[0][1:-1]
-			if hasattr(h, cmd):
-				getattr(h, cmd)(line) 
-			else:
-				print line
-		time.sleep(1)
-	notifier_close()
+	try:
+		while True:
+			line = sys.stdin.readline()
+			if line:
+				cmd = Handlers.arg_re.findall(line)[0][1:-1]
+				if hasattr(h, cmd):
+					getattr(h, cmd)(line)
+				else:
+					print line
+            time.sleep(PAUSE)
+	finally:
+		notifier_close()
 
 if __name__ == '__main__':
 	main()
